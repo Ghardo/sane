@@ -49,16 +49,16 @@ func pathToEncoder(path string) (EncodeFunc, error) {
 	}
 }
 
-func print(f string, v ...interface{}) {
+func print(f string, v ...any) {
 	fmt.Fprintf(os.Stderr, f, v...)
 }
 
 func printWrapped(text string, indent, width int) {
 	// Naïve implementation - won't work with fancy Unicode input
 	indentStr := strings.Repeat(" ", indent)
-	for _, line := range strings.Split(text, "\n") {
+	for line := range strings.SplitSeq(text, "\n") {
 		pos := 0
-		for _, word := range strings.Fields(line) {
+		for word := range strings.FieldsSeq(line) {
 			if pos+len(word) > width {
 				// Will loop forever if there's a word with len > width!
 				print("\n")
@@ -103,7 +103,7 @@ func printConstraints(o sane.Option) {
 	}
 }
 
-func printOption(o sane.Option, v interface{}) {
+func printOption(o sane.Option, v any) {
 	// Print option name
 	print("    -%s", o.Name)
 
@@ -141,7 +141,7 @@ func findOption(opts []sane.Option, name string) (*sane.Option, error) {
 	return nil, fmt.Errorf("no such option")
 }
 
-func parseBool(s string) (interface{}, error) {
+func parseBool(s string) (any, error) {
 	if s == "yes" || s == "true" || s == "1" {
 		return true, nil
 	}
@@ -164,7 +164,7 @@ func parseOptions(c *sane.Conn, args []string) error {
 		if err != nil {
 			return invalidArg // no such option
 		}
-		var v interface{}
+		var v any
 		if o.IsAutomatic && args[i+1] == "auto" {
 			v = sane.Auto // set to auto value
 		} else {
@@ -286,7 +286,7 @@ func usage() {
 	os.Exit(1)
 }
 
-func die(v ...interface{}) {
+func die(v ...any) {
 	if len(v) > 0 {
 		fmt.Fprintln(os.Stderr, v...)
 	}

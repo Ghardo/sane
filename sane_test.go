@@ -136,7 +136,7 @@ var testOpts = []Option{
 		Type:         TypeInt,
 		Unit:         UnitBit,
 		Length:       1,
-		ConstrSet:    []interface{}{-42, -8, 0, 17, 42, 256, 65536, 16777216, 1073741824},
+		ConstrSet:    []any{-42, -8, 0, 17, 42, 256, 65536, 16777216, 1073741824},
 		IsSettable:   true,
 		IsDetectable: true,
 		IsAdvanced:   true,
@@ -146,7 +146,7 @@ var testOpts = []Option{
 		Type:         TypeInt,
 		Unit:         UnitPercent,
 		Length:       6,
-		ConstrSet:    []interface{}{-42, -8, 0, 17, 42, 256, 65536, 16777216, 1073741824},
+		ConstrSet:    []any{-42, -8, 0, 17, 42, 256, 65536, 16777216, 1073741824},
 		IsSettable:   true,
 		IsDetectable: true,
 		IsAdvanced:   true,
@@ -179,7 +179,7 @@ var testOpts = []Option{
 		Type:         TypeFloat,
 		Unit:         UnitNone,
 		Length:       1,
-		ConstrSet:    []interface{}{-32.69999694824219, 12.099990844726562, 42.0, 129.5},
+		ConstrSet:    []any{-32.69999694824219, 12.099990844726562, 42.0, 129.5},
 		IsSettable:   true,
 		IsDetectable: true,
 		IsAdvanced:   true,
@@ -197,7 +197,7 @@ var testOpts = []Option{
 		Type:   TypeString,
 		Unit:   UnitNone,
 		Length: 1,
-		ConstrSet: []interface{}{
+		ConstrSet: []any{
 			"First entry",
 			"Second entry",
 			"This is the very long third entry. Maybe the frontend has an idea how to display it",
@@ -210,7 +210,7 @@ var testOpts = []Option{
 type testVal struct {
 	name string
 	typ  Type
-	val  interface{}
+	val  any
 }
 
 // Values to test option setting.
@@ -294,7 +294,7 @@ func checkOption(t *testing.T, actual, expected *Option) {
 	}
 }
 
-func checkOptionType(t *testing.T, o *Option, val interface{}) {
+func checkOptionType(t *testing.T, o *Option, val any) {
 	var (
 		ok      bool
 		valType string
@@ -340,7 +340,7 @@ func findOption(opts []Option, name string) *Option {
 	return nil
 }
 
-func getOption(t *testing.T, c *Conn, name string) interface{} {
+func getOption(t *testing.T, c *Conn, name string) any {
 	v, err := c.GetOption(name)
 	if err != nil {
 		t.Fatalf("get option %s failed: %v", name, err)
@@ -348,7 +348,7 @@ func getOption(t *testing.T, c *Conn, name string) interface{} {
 	return v
 }
 
-func setOption(t *testing.T, c *Conn, name string, val interface{}) Info {
+func setOption(t *testing.T, c *Conn, name string, val any) Info {
 	i, err := c.SetOption(name, val)
 	if err != nil {
 		t.Fatalf("set option %s to %v failed: %v", name, val, err)
@@ -540,7 +540,7 @@ func runTest(t *testing.T, n int, f func(i int, c *Conn)) {
 		t.Fatal("open failed:", err)
 	}
 	defer c.Close()
-	for i := 0; i < n; i++ {
+	for i := range n {
 		if f != nil {
 			f(i, c)
 		}
@@ -637,7 +637,7 @@ func TestSetOptions(t *testing.T) {
 		optVal := testVals[i].val
 		setOption(t, c, optName, optVal)
 		v := getOption(t, c, optName)
-		if !reflect.DeepEqual(interface{}(optVal), v) {
+		if !reflect.DeepEqual(any(optVal), v) {
 			t.Errorf("get option %s returned wrong value: %v should be %v",
 				optName, v, optVal)
 		}
