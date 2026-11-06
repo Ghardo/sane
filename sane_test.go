@@ -312,6 +312,15 @@ func checkOptionType(t *testing.T, o *Option, val interface{}) {
 	case string:
 		ok = o.Type == TypeString
 		valType = "string"
+	case []bool:
+		ok = o.Type == TypeBool && o.Length > 1
+		valType = "[]bool"
+	case []int:
+		ok = o.Type == TypeInt && o.Length > 1
+		valType = "[]int"
+	case []float64:
+		ok = o.Type == TypeFloat && o.Length > 1
+		valType = "[]float"
 	default:
 		ok = false
 		valType = "unexpected type"
