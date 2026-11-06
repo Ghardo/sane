@@ -215,18 +215,15 @@ func floatToSane(f float64) C.SANE_Word {
 }
 
 func nthWord(p *C.SANE_Word, i int) C.SANE_Word {
-	a := (*[1 << 16]C.SANE_Word)(unsafe.Pointer(p))
-	return a[i]
+	return unsafe.Slice(p, i+1)[i]
 }
 
 func setNthWord(p *C.SANE_Word, i int, w C.SANE_Word) {
-	a := (*[1 << 16]C.SANE_Word)(unsafe.Pointer(p))
-	a[i] = w
+	unsafe.Slice(p, i+1)[i] = w
 }
 
 func nthString(p *C.SANE_String_Const, i int) C.SANE_String_Const {
-	a := (*[1 << 16]C.SANE_String_Const)(unsafe.Pointer(p))
-	return a[i]
+	return unsafe.Slice(p, i+1)[i]
 }
 
 // Init must be called before the package can be used.
@@ -244,8 +241,7 @@ func Exit() {
 }
 
 func nthDevice(p **C.SANE_Device, i int) *C.SANE_Device {
-	a := (*[1 << 16]*C.SANE_Device)(unsafe.Pointer(p))
-	return a[i]
+	return unsafe.Slice(p, i+1)[i]
 }
 
 // Devices lists all available devices.
